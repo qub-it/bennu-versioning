@@ -1,0 +1,13 @@
+package com.qubit.solution.fenixedu.bennu.versioning.domain;
+
+class VersioningConfiguration {
+	String classname;
+	Boolean active;
+}
+
+relation VersioningConfigurationBennu {
+	VersioningConfiguration playsRole versioningConfigurations {
+		multiplicity *;
+	}
+	.org.fenixedu.bennu.core.domain.Bennu playsRole rootDomainObject;
+}
