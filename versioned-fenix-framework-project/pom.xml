@@ -12,6 +12,7 @@
 
 	<groupId>com.qubit.solution.fenixedu</groupId>
 	<artifactId>versioned-fenix-framework-project</artifactId>
+	<version>2.2.0-SNAPSHOT</version>
 	<name>Versioned Fenix Framework Project Root</name>
 	<packaging>pom</packaging>
 
@@ -30,13 +31,13 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>ulisboa-repo</id>
-			<url>http://nexjen.ulisboa.pt:8081/nexus/content/groups/public/</url>
+			<url>http://ul-nexjen.ulisboa.pt:8081/nexus/content/groups/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<repositories>
 		<repository>
 			<id>ulisboa-repo</id>
-			<url>http://nexjen.ulisboa.pt:8081/nexus/content/groups/public/</url>
+			<url>http://ul-nexjen.ulisboa.pt:8081/nexus/content/groups/public/</url>
 		</repository>
 		<repository>
 			<id>fenixedu-maven-repository</id>
@@ -57,11 +58,11 @@
 	<distributionManagement>
 		<repository>
 			<id>ulisboa-repo</id>
-			<url>http://nexjen.ulisboa.pt/nexus/content/repositories/releases/</url>
+			<url>http://ul-nexjen.ulisboa.pt:8081/nexus/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>ulisboa-repo</id>
-			<url>http://nexjen.ulisboa.pt/nexus/content/repositories/snapshots/</url>
+			<url>http://ul-nexjen.ulisboa.pt:8081/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
