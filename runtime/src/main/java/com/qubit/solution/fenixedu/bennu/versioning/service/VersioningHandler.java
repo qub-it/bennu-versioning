@@ -26,9 +26,6 @@
  */
 package com.qubit.solution.fenixedu.bennu.versioning.service;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -71,14 +68,8 @@ class VersioningHandler {
     private static String DEFAULT_CHARSET;
 
     private static Map<ValueType, Method> valueTypeSerializationMethodCache;
-    private static FileWriter fileWriter;
 
     static {
-        try {
-            fileWriter = new FileWriter(File.createTempFile("SQL_", ".sql", new File("/tmp/sqloutput/")));
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
         Map<String, Method> toSqlConverterMap = new HashMap<String, Method>();
         for (Method method : ToSqlConverter.class.getDeclaredMethods()) {
             toSqlConverterMap.put(method.getName(), method);
@@ -323,12 +314,6 @@ class VersioningHandler {
     private static void executeQuery(Connection connection, String generateSqlUpdates) throws SQLException {
         Statement statement = null;
         try {
-            try {
-                fileWriter.write(generateSqlUpdates);
-                fileWriter.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             statement = connection.createStatement();
             statement.executeUpdate(generateSqlUpdates);
         } finally {
