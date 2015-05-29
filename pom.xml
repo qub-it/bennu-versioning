@@ -23,6 +23,7 @@
 		<module>core</module>
 		<module>code-generator</module>
 		<module>runtime</module>
+		<module>versioned-fenix-framework-project</module>
 	</modules>
 
 	<distributionManagement>
@@ -53,50 +54,4 @@
 			<url>https://repo.fenixedu.org/fenixedu-maven-repository</url>
 		</repository>
 	</repositories>
-</project>
-
-
-<!-- 
-	<dependencies>
-		<dependency>
-			<groupId>org.fenixedu</groupId>
-			<artifactId>bennu-core</artifactId>
-			<version>${version.org.fenixedu.bennu}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.fenixedu</groupId>
-			<artifactId>bennu-spring</artifactId>
-			<version>${version.org.fenixedu.bennu.spring}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>pt.ist</groupId>
-			<artifactId>fenix-framework-backend-jvstm-ojb-runtime</artifactId>
-			<version>2.6.1</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>pt.ist</groupId>
-			<artifactId>fenix-framework-backend-jvstm-ojb-code-generator</artifactId>
-			<version>2.6.1</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		
-		<dependency>
-			<groupId>pt.ist</groupId>
-			<artifactId>fenix-framework-core-dml-code-generator</artifactId>
-			<version>2.7.0-SNAPSHOT</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		
-	</dependencies>
- -->
-	
 </project>
