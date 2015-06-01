@@ -5,9 +5,21 @@ class VersioningConfiguration {
 	Boolean active;
 }
 
+class VersioningTargetConfiguration {
+	String jdbcURL;
+	String username;
+	String password;
+}
+
+
 relation VersioningConfigurationBennu {
 	VersioningConfiguration playsRole versioningConfigurations {
 		multiplicity *;
 	}
+	.org.fenixedu.bennu.core.domain.Bennu playsRole rootDomainObject;
+}
+
+relation VersioningTargetConfigurationBennu {
+	VersioningTargetConfiguration playsRole versioningTargetConfiguration; 
 	.org.fenixedu.bennu.core.domain.Bennu playsRole rootDomainObject;
 }
