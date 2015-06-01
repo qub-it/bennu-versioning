@@ -12,7 +12,7 @@
 
 	<groupId>com.qubit.solution.fenixedu</groupId>
 	<artifactId>versioned-fenix-framework-project</artifactId>
-	<version>2.2.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>Versioned Fenix Framework Project Root</name>
 	<packaging>pom</packaging>
 
@@ -22,7 +22,7 @@
 				<groupId>pt.ist</groupId>
 				<artifactId>ff-maven-plugin</artifactId>
 				<configuration>
-					<codeGeneratorClassName>com.qubit.extension.fenixframework.DefaultDefaultGenerator</codeGeneratorClassName>
+					<codeGeneratorClassName>com.qubit.extension.fenixframework.VersioningDefaultGenerator</codeGeneratorClassName>
 				</configuration>
 			</plugin>
 		</plugins>

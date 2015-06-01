@@ -35,9 +35,9 @@ import pt.ist.fenixframework.dml.DefaultCodeGenerator;
 import pt.ist.fenixframework.dml.DomainClass;
 import pt.ist.fenixframework.dml.DomainModel;
 
-public class DefaultDefaultGenerator extends DefaultCodeGenerator {
+public class VersioningDefaultGenerator extends DefaultCodeGenerator {
 
-    public DefaultDefaultGenerator(CompilerArgs compArgs, DomainModel domainModel) {
+    public VersioningDefaultGenerator(CompilerArgs compArgs, DomainModel domainModel) {
         super(compArgs, ModelDecorator.decorateModel(domainModel));
     }
 
