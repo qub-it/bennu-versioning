@@ -75,7 +75,7 @@ public class VersioningConfiguration extends VersioningConfiguration_Base {
     @Atomic
     private static void createConfigurations(List<String> names) {
         for (String name : names) {
-            new VersioningConfiguration(name).setActive(true);;
+            new VersioningConfiguration(name).setActive(false);;
         }
     }
 
