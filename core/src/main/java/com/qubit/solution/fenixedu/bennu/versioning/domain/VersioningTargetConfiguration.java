@@ -1,5 +1,9 @@
 package com.qubit.solution.fenixedu.bennu.versioning.domain;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 import org.fenixedu.bennu.core.domain.Bennu;
 
 import pt.ist.fenixframework.Atomic;
@@ -33,4 +37,10 @@ public class VersioningTargetConfiguration extends VersioningTargetConfiguration
         setUsername(username);
         setPassword(password);
     }
+
+    public static Connection createConnection() throws SQLException {
+        VersioningTargetConfiguration configuration = VersioningTargetConfiguration.getInstance();
+        return DriverManager.getConnection(configuration.getJdbcURL(), configuration.getUsername(), configuration.getPassword());
+    }
+
 }

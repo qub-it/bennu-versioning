@@ -89,7 +89,7 @@ public class VersioningCreator implements CommitListener {
 
             Connection connection = null;
             try {
-                connection = createConnection();
+                connection = VersioningTargetConfiguration.createConnection();
                 transaction.putInContext(CONNECTION, connection);
             } catch (SQLException e) {
                 // We were unable to create a connection, maybe it's because the system booting
@@ -140,11 +140,6 @@ public class VersioningCreator implements CommitListener {
                 }
             }
         }
-    }
-
-    private static Connection createConnection() throws SQLException {
-        VersioningTargetConfiguration configuration = VersioningTargetConfiguration.getInstance();
-        return DriverManager.getConnection(configuration.getJdbcURL(), configuration.getUsername(), configuration.getPassword());
     }
 
     private static boolean isVersionedActive(Class clazz) {
