@@ -61,9 +61,14 @@ public class VersioningGeneratorOneBoxPerObject extends FenixCodeGeneratorOneBox
             print(out, "java.util.Map<String, Object> map = super.getVersionInfo();");
         }
 
+        onNewline(out);
+        print(out,"if (pt.ist.fenixframework.FenixFramework.isDomainObjectValid(this))");
+        newBlock(out);
+        print(out,"DO_State do_State = (DO_State) this.get$obj$state(false);");
+        
         for (Slot slot : domClass.getSlotsList()) {
             onNewline(out);
-            print(out, "Object " + slot.getName() + " = ((DO_State) this.get$obj$state(false))." + slot.getName() + ";");
+            print(out, "Object " + slot.getName() + " = do_State." + slot.getName() + ";");
             onNewline(out);
             print(out, "if (" + slot.getName() + " != null)");
             newBlock(out);
@@ -74,7 +79,7 @@ public class VersioningGeneratorOneBoxPerObject extends FenixCodeGeneratorOneBox
         for (Role role : domClass.getRoleSlotsList()) {
             if ((role.getName() != null) && (role.getMultiplicityUpper() == 1)) {
                 onNewline(out);
-                print(out, "Object " + role.getName() + " = ((DO_State) this.get$obj$state(false))." + role.getName() + ";");
+                print(out, "Object " + role.getName() + " = do_State." + role.getName() + ";");
                 onNewline(out);
                 print(out, "if (" + role.getName() + " != null)");
                 newBlock(out);
@@ -82,6 +87,7 @@ public class VersioningGeneratorOneBoxPerObject extends FenixCodeGeneratorOneBox
                 closeBlock(out);
             }
         }
+        closeBlock(out);
         print(out, "return map;");
         closeBlock(out);
     }
