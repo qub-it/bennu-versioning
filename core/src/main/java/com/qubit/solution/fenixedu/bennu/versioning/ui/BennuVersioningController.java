@@ -27,19 +27,16 @@
 package com.qubit.solution.fenixedu.bennu.versioning.ui;
 
 import org.fenixedu.bennu.spring.portal.SpringApplication;
-import org.fenixedu.bennu.spring.portal.SpringFunctionality;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/bennu-versioning")
 @SpringApplication(group = "logged", path = "bennu-versioning", title = "title.BennuVersioning")
-@SpringFunctionality(app = BennuVersioningController.class, title = "title.BennuVersioning")
 public class BennuVersioningController {
 
     @RequestMapping
     public String home(Model model) {
-        model.addAttribute("world", "World");
-        return "bennu-versioning/home";
+        return "redirect:/bennuVersioning/administration/manageversioning/versioningconfiguration/";
     }
 
 }
