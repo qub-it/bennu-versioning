@@ -124,10 +124,10 @@ ${portal.toolkit()}
 "${searchResult.classname}",
 "${searchResult.active}",
 <c:if test="${not searchResult.active}">
-"<a  class=\"btn btn-default btn-xs\" href=\"${pageContext.request.contextPath}/audittest/administration/manageversioning/versioningconfiguration/activate/${searchResult.externalId}\"><spring:message code='label.administration.manageVersioning.searchVersioningConfiguration.activate'/></a>"
+"<a  class=\"btn btn-default btn-xs\" href=\"${pageContext.request.contextPath}/bennuVersioning/administration/manageversioning/versioningconfiguration/activate/${searchResult.externalId}\"><spring:message code='label.administration.manageVersioning.searchVersioningConfiguration.activate'/></a>"
 </c:if>
 <c:if test="${searchResult.active}">
-"<a  class=\"btn btn-default btn-xs\" href=\"${pageContext.request.contextPath}/audittest/administration/manageversioning/versioningconfiguration/deactivate/${searchResult.externalId}\"><spring:message code='label.administration.manageVersioning.searchVersioningConfiguration.deactivate'/></a>"
+"<a  class=\"btn btn-default btn-xs\" href=\"${pageContext.request.contextPath}/bennuVersioning/administration/manageversioning/versioningconfiguration/deactivate/${searchResult.externalId}\"><spring:message code='label.administration.manageVersioning.searchVersioningConfiguration.deactivate'/></a>"
 </c:if>
 ],
             </c:forEach>
