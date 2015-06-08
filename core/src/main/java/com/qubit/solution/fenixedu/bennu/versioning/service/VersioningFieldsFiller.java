@@ -36,6 +36,7 @@ import org.joda.time.DateTime;
 
 import pt.ist.fenixframework.CommitListener;
 import pt.ist.fenixframework.DomainObject;
+import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.Transaction;
 import pt.ist.fenixframework.txintrospector.TxIntrospector;
 
@@ -51,7 +52,7 @@ public class VersioningFieldsFiller implements CommitListener {
             for (final Iterator<DomainObject> iterator = txIntrospector.getModifiedObjects().iterator(); iterator.hasNext();) {
 
                 final DomainObject domainObject = iterator.next();
-                if (!txIntrospector.isDeleted(domainObject) && VersionableObject.class.isAssignableFrom(domainObject.getClass())) {
+                if (!txIntrospector.isDeleted(domainObject) && FenixFramework.isDomainObjectValid(domainObject) && VersionableObject.class.isAssignableFrom(domainObject.getClass())) {
                     VersionableObject versionableObject = (VersionableObject) domainObject;
                     versionableObject.setVersioningUpdateDate(new DateTime());
                     versionableObject.setVersioningUpdatedBy(currentUsername);
