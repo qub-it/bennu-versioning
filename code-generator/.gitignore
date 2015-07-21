@@ -1,2 +1,5 @@
 *.classpath
 /target/
+.project
+.settings/
+/src/main/webapp/WEB-INF/resources/
