@@ -31,15 +31,17 @@ import pt.ist.fenixframework.dml.DomainModel;
 import pt.ist.fenixframework.dml.Slot;
 import pt.ist.fenixframework.dml.ValueType;
 
+import com.qubit.solution.fenixedu.bennu.versioning.util.VersioningConstants;
+
 public class ModelDecorator {
 
     public static DomainModel decorateModel(DomainModel domainModel) {
         ValueType stringValueType = domainModel.findValueType("String");
         ValueType dateTimeValueType = domainModel.findValueType("DateTime");
-        Slot creator = new Slot("versioningCreator", stringValueType);
-        Slot creationDate = new Slot("versioningCreationDate", dateTimeValueType);
-        Slot updatedBy = new Slot("versioningUpdatedBy", stringValueType);
-        Slot updateDate = new Slot("versioningUpdateDate", dateTimeValueType);
+        Slot creator = new Slot(VersioningConstants.VERSIONING_CREATOR, stringValueType);
+        Slot creationDate = new Slot(VersioningConstants.VERSIONING_CREATION_DATE, dateTimeValueType);
+        Slot updatedBy = new Slot(VersioningConstants.VERSIONING_UPDATED_BY, stringValueType);
+        Slot updateDate = new Slot(VersioningConstants.VERSIONING_UPDATE_DATE, dateTimeValueType);
 
         for (DomainClass domainClass : domainModel.getDomainClasses()) {
             if (domainClass.getSuperclass() != null) {
