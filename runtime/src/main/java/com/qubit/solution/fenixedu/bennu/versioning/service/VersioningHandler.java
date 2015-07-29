@@ -57,6 +57,8 @@ import pt.ist.fenixframework.backend.jvstmojb.repository.ToSqlConverter;
 import pt.ist.fenixframework.dml.ExternalizationElement;
 import pt.ist.fenixframework.dml.ValueType;
 
+import com.qubit.solution.fenixedu.bennu.versioning.util.VersioningConstants;
+
 class VersioningHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(VersioningHandler.class);
@@ -197,8 +199,10 @@ class VersioningHandler {
         if (!StringUtils.isEmpty(generateSqlUpdates)) {
             executeQuery(connection, generateSqlUpdates);
             if (generateSqlUpdates.startsWith("create")) {
-                executeQuery(connection, "alter table " + versionedTable + " add column FF$QUB$OPERATION_KIND varchar(255);");
-                executeQuery(connection, "alter table " + versionedTable + " add column FF$QUB$TX_NUMBER varchar(255);");
+                executeQuery(connection, "alter table " + versionedTable + " add column "
+                        + VersioningConstants.VERSIONED_COLUMN_FF_QUB_OPERATION_KIND + " varchar(255);");
+                executeQuery(connection, "alter table " + versionedTable + " add column "
+                        + VersioningConstants.VERSIONED_COLUMN_FF_QUB_TX_NUMBER + " varchar(255);");
             }
         }
 
@@ -223,8 +227,8 @@ class VersioningHandler {
         }
 
         valuesMap.put("OID", externalId);
-        valuesMap.put("FF$QUB$TX_NUMBER", String.valueOf(txNumber));
-        valuesMap.put("FF$QUB$OPERATION_KIND", operation.toString());
+        valuesMap.put(VersioningConstants.VERSIONED_COLUMN_FF_QUB_TX_NUMBER, String.valueOf(txNumber));
+        valuesMap.put(VersioningConstants.VERSIONED_COLUMN_FF_QUB_OPERATION_KIND, operation.toString());
 
         StringBuilder fields = new StringBuilder();
         StringBuilder values = new StringBuilder();
