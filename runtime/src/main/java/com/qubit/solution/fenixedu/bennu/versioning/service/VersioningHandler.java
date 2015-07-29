@@ -200,9 +200,9 @@ class VersioningHandler {
             executeQuery(connection, generateSqlUpdates);
             if (generateSqlUpdates.startsWith("create")) {
                 executeQuery(connection, "alter table " + versionedTable + " add column "
-                        + VersioningConstants.FF_QUB_OPERATION_KIND + " varchar(255);");
-                executeQuery(connection, "alter table " + versionedTable + " add column " + VersioningConstants.FF_QUB_TX_NUMBER
-                        + " varchar(255);");
+                        + VersioningConstants.VERSIONED_COLUMN_FF_QUB_OPERATION_KIND + " varchar(255);");
+                executeQuery(connection, "alter table " + versionedTable + " add column "
+                        + VersioningConstants.VERSIONED_COLUMN_FF_QUB_TX_NUMBER + " varchar(255);");
             }
         }
 
@@ -227,8 +227,8 @@ class VersioningHandler {
         }
 
         valuesMap.put("OID", externalId);
-        valuesMap.put(VersioningConstants.FF_QUB_TX_NUMBER, String.valueOf(txNumber));
-        valuesMap.put(VersioningConstants.FF_QUB_OPERATION_KIND, operation.toString());
+        valuesMap.put(VersioningConstants.VERSIONED_COLUMN_FF_QUB_TX_NUMBER, String.valueOf(txNumber));
+        valuesMap.put(VersioningConstants.VERSIONED_COLUMN_FF_QUB_OPERATION_KIND, operation.toString());
 
         StringBuilder fields = new StringBuilder();
         StringBuilder values = new StringBuilder();

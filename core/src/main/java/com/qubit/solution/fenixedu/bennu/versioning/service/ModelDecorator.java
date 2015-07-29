@@ -38,10 +38,10 @@ public class ModelDecorator {
     public static DomainModel decorateModel(DomainModel domainModel) {
         ValueType stringValueType = domainModel.findValueType("String");
         ValueType dateTimeValueType = domainModel.findValueType("DateTime");
-        Slot creator = new Slot(VersioningConstants.VERSIONING_CREATOR, stringValueType);
-        Slot creationDate = new Slot(VersioningConstants.VERSIONING_CREATION_DATE, dateTimeValueType);
-        Slot updatedBy = new Slot(VersioningConstants.VERSIONING_UPDATED_BY, stringValueType);
-        Slot updateDate = new Slot(VersioningConstants.VERSIONING_UPDATE_DATE, dateTimeValueType);
+        Slot creator = new Slot(VersioningConstants.SLOT_VERSIONING_CREATOR, stringValueType);
+        Slot creationDate = new Slot(VersioningConstants.SLOT_VERSIONING_CREATION_DATE, dateTimeValueType);
+        Slot updatedBy = new Slot(VersioningConstants.SLOT_VERSIONING_UPDATED_BY, stringValueType);
+        Slot updateDate = new Slot(VersioningConstants.SLOT_VERSIONING_UPDATE_DATE, dateTimeValueType);
 
         for (DomainClass domainClass : domainModel.getDomainClasses()) {
             if (domainClass.getSuperclass() != null) {

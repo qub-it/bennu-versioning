@@ -3,7 +3,9 @@ package com.qubit.solution.fenixedu.bennu.versioning.ui.administration.manageHis
 import java.util.List;
 import java.util.Map;
 
+import org.fenixedu.bennu.core.groups.DynamicGroup;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
+import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.bennu.spring.portal.SpringFunctionality;
 import org.joda.time.DateTime;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,7 +26,8 @@ import com.qubit.solution.fenixedu.bennu.versioning.ui.BennuVersioningBaseContro
 import com.qubit.solution.fenixedu.bennu.versioning.ui.BennuVersioningController;
 import com.qubit.solution.fenixedu.bennu.versioning.util.VersioningConstants;
 
-@SpringFunctionality(app = BennuVersioningController.class, title = "label.title.administration.manageHistory")
+@SpringFunctionality(app = BennuVersioningController.class, title = "label.title.administration.manageHistory",
+        accessGroup = "#managers")
 @RequestMapping(HistoryRetrieverController.CONTROLLER_URL)
 public class HistoryRetrieverController extends BennuVersioningBaseController {
     public static final String CONTROLLER_URL = "/bennuVersioning/administration/managehistory";
@@ -60,6 +63,13 @@ public class HistoryRetrieverController extends BennuVersioningBaseController {
 
     @RequestMapping(value = READ_URI + "{oid}")
     public String read(@PathVariable("oid") DomainObject domainObject, Model model, RedirectAttributes redirectAttributes) {
+        if (!DynamicGroup.get("managers").isMember(Authenticate.getUser())) {
+            addErrorMessage(
+                    BundleUtil.getString(VersioningConstants.BUNDLE, "error.user.not.authorized", Authenticate.getUser()
+                            .getProfile().getDisplayName()), model);
+            return "bennu-versioning/administration/managehistory/versionableobject/search";
+        }
+
         if (!FenixFramework.isDomainObjectValid(domainObject)) {
             addErrorMessage(BundleUtil.getString(VersioningConstants.BUNDLE, "error.read.versionableobject.oid.not.valid"), model);
             return redirect(SEARCH_URL, model, redirectAttributes);
@@ -69,9 +79,8 @@ public class HistoryRetrieverController extends BennuVersioningBaseController {
         setVersionableObject(versionableObject, model);
         HistoryRetriever historyRetriever = new HistoryRetriever(versionableObject);
 
-        List<Map<String, Object>> retrieveModificationsInVersions = historyRetriever.retrieveVersionsOnlyModifications();
-        Map<String, Map<String, List<Map<String, Object>>>> retrieveRelatedObjectsVersions =
-                historyRetriever.retrieveVersionsOfRelatedObjects();
+        List<Map<String, Object>> retrieveModificationsInVersions = historyRetriever.retrieveObject(true);
+        Map<String, Map<String, List<Map<String, Object>>>> retrieveRelatedObjectsVersions = historyRetriever.retrieveRelations();
 
         model.addAttribute("retrieveModificationsInVersions", retrieveModificationsInVersions);
         model.addAttribute("retrieveRelatedObjectsVersions", retrieveRelatedObjectsVersions);
@@ -86,6 +95,9 @@ public class HistoryRetrieverController extends BennuVersioningBaseController {
     public @ResponseBody String checkVersion(@PathVariable("oid") DomainObject domainObject,
             @RequestParam(value = "updateDate") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.S") DateTime updateDateTime,
             Model model, RedirectAttributes redirectAttributes) {
+        if (!DynamicGroup.get("managers").isMember(Authenticate.getUser())) {
+            return "notAuthorized";
+        }
         VersionableObject versionableObject = (VersionableObject) domainObject;
         if (versionableObject == null) {
             return "null";

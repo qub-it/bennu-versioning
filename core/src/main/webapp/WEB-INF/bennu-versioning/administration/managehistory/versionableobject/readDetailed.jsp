@@ -35,11 +35,11 @@ ${portal.angularToolkit()}
 
 
 <%-- Constants --%>
-<c:set var="FF_QUB_OPERATION_KIND" value="<%= VersioningConstants.FF_QUB_OPERATION_KIND %>" />
-<c:set var="FF_QUB_CLASS_NAME" value="<%= VersioningConstants.FF_QUB_CLASS_NAME %>" />
-<c:set var="FF_QUB_ROLE_NAME" value="<%= VersioningConstants.FF_QUB_ROLE_NAME %>" />
-<c:set var="FF_QUB_TX_NUMBER" value="<%= VersioningConstants.FF_QUB_TX_NUMBER %>" />
-<c:set var="FF_QUB_ROLE_OPERATION_KIND" value="<%= VersioningConstants.FF_QUB_ROLE_OPERATION_KIND %>" />
+<c:set var="FF_QUB_OPERATION_KIND" value="<%= VersioningConstants.VERSIONED_COLUMN_FF_QUB_OPERATION_KIND %>" />
+<c:set var="FF_QUB_CLASS_NAME" value="<%= VersioningConstants.VERSIONED_COLUMN_FF_QUB_CLASS_NAME %>" />
+<c:set var="FF_QUB_ROLE_NAME" value="<%= VersioningConstants.VERSIONED_COLUMN_FF_QUB_ROLE_NAME %>" />
+<c:set var="FF_QUB_TX_NUMBER" value="<%= VersioningConstants.VERSIONED_COLUMN_FF_QUB_TX_NUMBER %>" />
+<c:set var="FF_QUB_ROLE_OPERATION_KIND" value="<%= VersioningConstants.VERSIONED_COLUMN_FF_QUB_ROLE_OPERATION_KIND %>" />
 <c:set var="ROLE_ADDED_OBJECT" value="<%= VersioningConstants.ROLE_ADDED_OBJECT %>" />
 <c:set var="ROLE_REMOVED_OBJECT" value="<%= VersioningConstants.ROLE_REMOVED_OBJECT %>" />
 
@@ -136,7 +136,7 @@ ${portal.angularToolkit()}
                 	 $scope.processViewDetails = function(externalId, objectMap, model) {
                          $scope.postBackUrl = "${pageContext.request.contextPath}<%= HistoryRetrieverController.CHECK_VERSION_URL%>" + externalId;
                          $scope.updateDate = objectMap['label.Versioning.updateDate'];
-                         $scope.opType = objectMap['<%= VersioningConstants.FF_QUB_OPERATION_KIND %>'];
+                         $scope.opType = objectMap['<%= VersioningConstants.VERSIONED_COLUMN_FF_QUB_OPERATION_KIND %>'];
                          console.log($scope.updateDate);
                          $scope.postBack(model);
                          console.log($scope.object);
