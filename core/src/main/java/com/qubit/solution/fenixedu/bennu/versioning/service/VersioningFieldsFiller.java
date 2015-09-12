@@ -27,7 +27,6 @@
 package com.qubit.solution.fenixedu.bennu.versioning.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.fenixedu.bennu.core.domain.User;
@@ -36,9 +35,11 @@ import org.joda.time.DateTime;
 
 import pt.ist.fenixframework.CommitListener;
 import pt.ist.fenixframework.DomainObject;
-import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.Transaction;
 import pt.ist.fenixframework.txintrospector.TxIntrospector;
+
+import com.qubit.solution.fenixedu.bennu.versioning.domain.UpdateEntity;
+import com.qubit.solution.fenixedu.bennu.versioning.domain.UpdateTimestamp;
 
 public class VersioningFieldsFiller implements CommitListener {
 
@@ -49,16 +50,6 @@ public class VersioningFieldsFiller implements CommitListener {
 
             String currentUsername = getCurrentUsername();
 
-            for (final Iterator<DomainObject> iterator = txIntrospector.getModifiedObjects().iterator(); iterator.hasNext();) {
-
-                final DomainObject domainObject = iterator.next();
-                if (!txIntrospector.isDeleted(domainObject) && FenixFramework.isDomainObjectValid(domainObject) && VersionableObject.class.isAssignableFrom(domainObject.getClass())) {
-                    VersionableObject versionableObject = (VersionableObject) domainObject;
-                    versionableObject.setVersioningUpdateDate(new DateTime());
-                    versionableObject.setVersioningUpdatedBy(currentUsername);
-                }
-            }
-
             List<DomainObject> newObjects = new ArrayList<DomainObject>(txIntrospector.getNewObjects());
             for (DomainObject domainObject : newObjects) {
                 if (VersionableObject.class.isAssignableFrom(domainObject.getClass())) {
@@ -66,8 +57,8 @@ public class VersioningFieldsFiller implements CommitListener {
                     DateTime dateTime = new DateTime();
                     versionableObject.setVersioningCreationDate(dateTime);
                     versionableObject.setVersioningCreator(currentUsername);
-                    versionableObject.setVersioningUpdateDate(dateTime);
-                    versionableObject.setVersioningUpdatedBy(currentUsername);
+                    versionableObject.setVersioningUpdateDate(new UpdateTimestamp());
+                    versionableObject.setVersioningUpdatedBy(new UpdateEntity());
                 }
             }
         }

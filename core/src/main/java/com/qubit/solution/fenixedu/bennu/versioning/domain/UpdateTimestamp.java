@@ -24,34 +24,49 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with FenixEdu bennu-versioning-core.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.qubit.solution.fenixedu.bennu.versioning.service;
+package com.qubit.solution.fenixedu.bennu.versioning.domain;
 
-import java.util.Map;
+import java.io.Serializable;
 
 import org.joda.time.DateTime;
 
-import com.qubit.solution.fenixedu.bennu.versioning.domain.UpdateEntity;
-import com.qubit.solution.fenixedu.bennu.versioning.domain.UpdateTimestamp;
+@SuppressWarnings("serial")
+public class UpdateTimestamp implements Serializable {
+    private DateTime date;
 
-public interface VersionableObject {
+    public UpdateTimestamp() {
+        this.date = new DateTime();
+    }
 
-    public String getVersioningCreator();
+    public UpdateTimestamp(DateTime date) {
+        this.date = date;
+    }
 
-    public void setVersioningCreator(String creator);
+    public DateTime getDate() {
+        return date;
+    }
 
-    public DateTime getVersioningCreationDate();
+    @Override
+    public String toString() {
+        return date.toString();
+    }
 
-    public void setVersioningCreationDate(DateTime dateTime);
+    public DateTime externalize() {
+        date = new DateTime();
+        return date;
+    }
 
-    public UpdateEntity getVersioningUpdatedBy();
+    @Override
+    public int hashCode() {
+        return date.hashCode();
+    }
 
-    public void setVersioningUpdatedBy(UpdateEntity updatedBy);
-
-    public UpdateTimestamp getVersioningUpdateDate();
-
-    public void setVersioningUpdateDate(UpdateTimestamp updateDate);
-
-    public Map<String, Object> getVersionInfo();
-
-    public String getExternalId();
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof UpdateTimestamp) {
+            UpdateTimestamp other = (UpdateTimestamp) o;
+            return date.equals(other.getDate());
+        }
+        return false;
+    }
 }

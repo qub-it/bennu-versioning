@@ -24,34 +24,56 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with FenixEdu bennu-versioning-core.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.qubit.solution.fenixedu.bennu.versioning.service;
+package com.qubit.solution.fenixedu.bennu.versioning.domain;
 
-import java.util.Map;
+import java.io.Serializable;
 
-import org.joda.time.DateTime;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.security.Authenticate;
 
-import com.qubit.solution.fenixedu.bennu.versioning.domain.UpdateEntity;
-import com.qubit.solution.fenixedu.bennu.versioning.domain.UpdateTimestamp;
+@SuppressWarnings("serial")
+public class UpdateEntity implements Serializable {
 
-public interface VersionableObject {
+    private String username;
 
-    public String getVersioningCreator();
+    public UpdateEntity() {
+        username = getCurrentUsername();
+    }
 
-    public void setVersioningCreator(String creator);
+    private String getCurrentUsername() {
+        User currentUser = Authenticate.getUser();
+        return currentUser != null ? currentUser.getUsername() : "unknown";
+    }
 
-    public DateTime getVersioningCreationDate();
+    public UpdateEntity(String externalizedString) {
+        this.username = externalizedString;
+    }
 
-    public void setVersioningCreationDate(DateTime dateTime);
+    public String getUsername() {
+        return username;
+    }
 
-    public UpdateEntity getVersioningUpdatedBy();
+    @Override
+    public String toString() {
+        return username;
+    }
 
-    public void setVersioningUpdatedBy(UpdateEntity updatedBy);
+    public String externalize() {
+        String currentUsername = getCurrentUsername();
+        return currentUsername;
+    }
 
-    public UpdateTimestamp getVersioningUpdateDate();
+    @Override
+    public int hashCode() {
+        return username.hashCode();
+    }
 
-    public void setVersioningUpdateDate(UpdateTimestamp updateDate);
-
-    public Map<String, Object> getVersionInfo();
-
-    public String getExternalId();
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof UpdateEntity) {
+            UpdateEntity other = (UpdateEntity) o;
+            return username.equals(other.getUsername());
+        }
+        return false;
+    }
 }
