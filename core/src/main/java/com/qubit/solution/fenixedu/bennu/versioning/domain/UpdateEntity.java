@@ -59,8 +59,8 @@ public class UpdateEntity implements Serializable {
     }
 
     public String externalize() {
-        String currentUsername = getCurrentUsername();
-        return currentUsername;
+        username = getCurrentUsername();
+        return username;
     }
 
     @Override
