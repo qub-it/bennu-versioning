@@ -31,13 +31,13 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>ulisboa-repo</id>
-			<url>http://ul-nexjen.ulisboa.pt:8081/nexus/content/groups/public/</url>
+			<url>https://nexjen.ulisboa.pt/nexus/content/groups/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<repositories>
 		<repository>
 			<id>ulisboa-repo</id>
-			<url>http://ul-nexjen.ulisboa.pt:8081/nexus/content/groups/public/</url>
+			<url>https://nexjen.ulisboa.pt/nexus/content/groups/public/</url>
 		</repository>
 		<repository>
 			<id>fenixedu-maven-repository</id>
