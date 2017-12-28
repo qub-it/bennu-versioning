@@ -26,15 +26,40 @@
  */
 package com.qubit.extension.fenixframework;
 
-import pt.ist.fenixframework.FenixFramework;
-import pt.ist.fenixframework.backend.jvstmojb.JvstmOJBConfig;
+import java.util.function.Consumer;
 
 import com.qubit.solution.fenixedu.bennu.versioning.service.ModelDecorator;
 
+import pt.ist.fenixframework.Config;
+import pt.ist.fenixframework.FenixFramework;
+import pt.ist.fenixframework.backend.jvstmojb.JvstmOJBConfig;
+
 public class VersioningConfig extends JvstmOJBConfig {
+
+    private String versionConfigurators;
+
+    public void setVersionConfigurators(String versionConfigurators) {
+        this.versionConfigurators = versionConfigurators;
+    }
+
+    public String getVersionConfigurators() {
+        return versionConfigurators;
+    }
 
     @Override
     protected void init() {
+        if (versionConfigurators != null && !versionConfigurators.isEmpty()) {
+            for (String classname : versionConfigurators.split(",")) {
+                try {
+                    Class<?> forName = Class.forName(classname);
+                    Consumer<Config> newInstance = (Consumer<Config>) forName.newInstance();
+                    newInstance.accept(this);
+                } catch (Throwable t) {
+                    // It may fail but we want to keep going, so let's just print the stacktrace
+                    t.printStackTrace();
+                }
+            }
+        }
         ModelDecorator.decorateModel(FenixFramework.getDomainModel());
         super.init();
     }
