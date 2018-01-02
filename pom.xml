@@ -23,7 +23,6 @@
 		<module>core</module>
 		<module>code-generator</module>
 		<module>runtime</module>
-		<module>versioned-fenix-framework-project</module>
 	</modules>
 
 	<distributionManagement>
