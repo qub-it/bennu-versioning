@@ -59,6 +59,9 @@ import pt.ist.fenixframework.dml.ValueType;
 
 class VersioningHandler {
 
+    private static final String VERSIONING_UPDATE_DATE = "versioningUpdateDate";
+    private static final String VERSIONING_UPDATED_BY = "versioningUpdatedBy";
+
     private static final Logger logger = LoggerFactory.getLogger(VersioningHandler.class);
 
     public static enum LogOperation {
@@ -170,6 +173,18 @@ class VersioningHandler {
     public static void log(Connection connection, int txNumber, VersionableObject domainObject, LogOperation operation) {
         Map<String, Object> valueMap = domainObject.getVersionInfo();
 
+        // let's check if update entity and update timestamp are available
+        // if not let's add them, so even the delete contains this information
+        //
+        // 24 February 2018 - Paulo Abrantes
+
+        if (!valueMap.containsKey(VERSIONING_UPDATED_BY)) {
+            valueMap.put(VERSIONING_UPDATED_BY, new com.qubit.solution.fenixedu.bennu.versioning.domain.UpdateEntity());
+        }
+        if (!valueMap.containsKey(VERSIONING_UPDATE_DATE)) {
+            valueMap.put(VERSIONING_UPDATE_DATE, new com.qubit.solution.fenixedu.bennu.versioning.domain.UpdateTimestamp());
+        }
+
         ClassDescriptor descriptor = getDescriptorTable().get(domainObject.getClass().getName());
         try {
             process(connection, txNumber, domainObject.getExternalId(), operation, descriptor, valueMap);
@@ -206,9 +221,8 @@ class VersioningHandler {
         for (Entry<String, Object> entry : map.entrySet()) {
             Object object = entry.getValue();
             String field = entry.getKey();
-            String fieldName =
-                    getColumnName((object instanceof DomainObject) ? "oid" + field.substring(0, 1).toUpperCase()
-                            + field.substring(1) : field);
+            String fieldName = getColumnName(
+                    (object instanceof DomainObject) ? "oid" + field.substring(0, 1).toUpperCase() + field.substring(1) : field);
 
             String valueAsString = null;
             ValueType otherValueType = getValueType(object);
