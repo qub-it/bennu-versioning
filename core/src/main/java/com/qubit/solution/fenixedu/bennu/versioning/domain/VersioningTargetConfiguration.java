@@ -1,10 +1,12 @@
 package com.qubit.solution.fenixedu.bennu.versioning.domain;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.fenixedu.bennu.core.domain.Bennu;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import pt.ist.fenixframework.Atomic;
 
@@ -36,11 +38,36 @@ public class VersioningTargetConfiguration extends VersioningTargetConfiguration
         setJdbcURL(jdbcURL);
         setUsername(username);
         setPassword(password);
+        closePool();
+    }
+
+    private HikariDataSource pool = null;
+
+    private synchronized void closePool() {
+        if (pool != null) {
+            pool.close();
+            pool = null;
+        }
+    }
+
+    public synchronized Connection getConnectionFromPool() throws SQLException {
+        if (pool == null) {
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(getJdbcURL());
+            config.setUsername(getUsername());
+            config.setPassword(getPassword());
+            config.addDataSourceProperty("cachePrepStmts", "true");
+            config.addDataSourceProperty("prepStmtCacheSize", "250");
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            config.setMaximumPoolSize(25);
+            pool = new HikariDataSource(config);
+        }
+        return pool.getConnection();
     }
 
     public static Connection createConnection() throws SQLException {
         VersioningTargetConfiguration configuration = VersioningTargetConfiguration.getInstance();
-        return DriverManager.getConnection(configuration.getJdbcURL(), configuration.getUsername(), configuration.getPassword());
+        return configuration.getConnectionFromPool();
     }
 
 }
