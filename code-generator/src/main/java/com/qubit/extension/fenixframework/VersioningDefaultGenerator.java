@@ -1,6 +1,6 @@
 /**
- * This file was created by Quorum Born IT <http://www.qub-it.com/> and its 
- * copyright terms are bind to the legal agreement regulating the FenixEdu@ULisboa 
+ * This file was created by Quorum Born IT <http://www.qub-it.com/> and its
+ * copyright terms are bind to the legal agreement regulating the FenixEdu@ULisboa
  * software development project between Quorum Born IT and Serviços Partilhados da
  * Universidade de Lisboa:
  *  - Copyright © 2015 Quorum Born IT (until any Go-Live phase)
@@ -8,7 +8,7 @@
  *
  * Contributors: paulo.abrantes@qub-it.com
  *
- * 
+ *
  * This file is part of FenixEdu bennu-versioning-code-generator.
  *
  * FenixEdu bennu-versioning-code-generator is free software: you can redistribute it and/or modify
@@ -37,14 +37,22 @@ import pt.ist.fenixframework.dml.DomainModel;
 
 public class VersioningDefaultGenerator extends DefaultCodeGenerator {
 
-    public VersioningDefaultGenerator(CompilerArgs compArgs, DomainModel domainModel) {
+    public VersioningDefaultGenerator(final CompilerArgs compArgs, final DomainModel domainModel) {
         super(compArgs, ModelDecorator.decorateModel(domainModel));
     }
 
     @Override
-    protected void generateBaseClassBody(DomainClass domClass, PrintWriter out) {
+    protected void generateBaseClassBody(final DomainClass domClass, final PrintWriter out) {
         super.generateBaseClassBody(domClass, out);
         onNewline(out);
         print(out, "public java.util.Map<String, Object> getVersionInfo() { return null; }");
+    }
+
+    @Override
+    public boolean isDefaultCodeGenerator() {
+        // 22 Mar 2018
+        // Fenix Framework has in CodeGenerator this method has:
+        // getClass().equals(DefaultCodeGenerator.class), which does not allow this to be default
+        return true;
     }
 }
