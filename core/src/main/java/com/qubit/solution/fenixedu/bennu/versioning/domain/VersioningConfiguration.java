@@ -1,5 +1,5 @@
 /**
- * This file was created by Quorum Born IT <http://www.qub-it.com/> and its 
+x * This file was created by Quorum Born IT <http://www.qub-it.com/> and its 
  * copyright terms are bind to the legal agreement regulating the FenixEdu@ULisboa 
  * software development project between Quorum Born IT and Serviços Partilhados da
  * Universidade de Lisboa:
@@ -28,7 +28,9 @@ package com.qubit.solution.fenixedu.bennu.versioning.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.fenixedu.bennu.core.domain.Bennu;
 
@@ -37,6 +39,8 @@ import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.dml.DomainClass;
 
 public class VersioningConfiguration extends VersioningConfiguration_Base {
+
+    private static final Map<String, VersioningConfiguration> CACHE = new HashMap<String, VersioningConfiguration>();
 
     public VersioningConfiguration(String classname) {
         this();
@@ -64,12 +68,14 @@ public class VersioningConfiguration extends VersioningConfiguration_Base {
     }
 
     public static VersioningConfiguration getConfigurationFor(String fullClassName) {
+        return CACHE.get(fullClassName);
+    }
+
+    public static void rebuildCache() {
+        CACHE.clear();
         for (VersioningConfiguration configuration : Bennu.getInstance().getVersioningConfigurationsSet()) {
-            if (configuration.getClassname().equals(fullClassName)) {
-                return configuration;
-            }
+            CACHE.put(configuration.getClassname(), configuration);
         }
-        return null;
     }
 
     @Atomic

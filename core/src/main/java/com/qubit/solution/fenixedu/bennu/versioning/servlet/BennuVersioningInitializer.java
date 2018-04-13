@@ -30,10 +30,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import com.qubit.solution.fenixedu.bennu.versioning.domain.VersioningConfiguration;
+
 import pt.ist.fenixframework.CallableWithoutException;
 import pt.ist.fenixframework.FenixFramework;
-
-import com.qubit.solution.fenixedu.bennu.versioning.domain.VersioningConfiguration;
 
 @WebListener
 public class BennuVersioningInitializer implements ServletContextListener {
@@ -46,6 +46,7 @@ public class BennuVersioningInitializer implements ServletContextListener {
             @Override
             public Object call() {
                 VersioningConfiguration.syncConfigurationWithDomain();
+                VersioningConfiguration.rebuildCache();
                 return null;
             }
         });
