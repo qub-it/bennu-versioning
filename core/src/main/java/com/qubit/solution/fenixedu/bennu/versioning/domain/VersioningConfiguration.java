@@ -64,6 +64,7 @@ public class VersioningConfiguration extends VersioningConfiguration_Base {
 
         if (!names.isEmpty()) {
             createConfigurations(names);
+            rebuildCache();
         }
     }
 
