@@ -45,8 +45,8 @@ public class BennuVersioningInitializer implements ServletContextListener {
 
             @Override
             public Object call() {
-                VersioningConfiguration.syncConfigurationWithDomain();
                 VersioningConfiguration.rebuildCache();
+                VersioningConfiguration.syncConfigurationWithDomain();
                 return null;
             }
         });
