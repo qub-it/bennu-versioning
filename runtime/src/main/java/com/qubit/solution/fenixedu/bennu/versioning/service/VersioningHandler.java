@@ -91,7 +91,15 @@ class VersioningHandler {
 
                 } else {
                     Class<?> valueTypeClass = null;
-                    valueTypeClass = Class.forName(valueType.getFullname());
+                    String valueTypeFullName = valueType.getFullname();
+                    try {
+                        valueTypeClass = Class.forName(valueTypeFullName);
+                    } catch (Throwable t) {
+                        // Might be an inner class let's give it a try
+                        int lastIndexOf = valueTypeFullName.lastIndexOf('.');
+                        valueTypeClass = Class.forName(
+                                valueTypeFullName.substring(0, lastIndexOf) + "$" + valueTypeFullName.substring(lastIndexOf + 1));
+                    }
                     List<ExternalizationElement> externalizationElements = valueType.getExternalizationElements();
                     String externalizeMethod = externalizationElements.get(0).getMethodName();
                     int lastIndexOfDot = externalizeMethod.lastIndexOf('.');
