@@ -309,7 +309,20 @@ class VersioningHandler {
     }
 
     private static ValueType getValueType(Object object) {
-        return FenixFramework.getDomainModel().findValueType(object.getClass().getSimpleName());
+        ValueType findValueType = FenixFramework.getDomainModel().findValueType(object.getClass().getSimpleName());
+        // findValueType received a simple class name. But there may be valuetypes with the same simple name
+        // as a domain object (or any other object type). So before we return the valueType we check if 
+        // the full name matches the classes FQDN. If it does not match then it's a case where we found a 
+        // value type  with the same simple name as the class we are checking but it's not, in fact, the 
+        // same class.
+        // 
+        // 10 August 2018 - Paulo Abrantes
+        if (findValueType != null && object.getClass().getName().equals(findValueType.getFullname())) {
+            return findValueType;
+        } else {
+            return null;
+        }
+
     }
 
     private static String getColumnName(String name) {
