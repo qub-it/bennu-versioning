@@ -70,16 +70,15 @@ public class HistoryRetriever {
         try {
             connection = VersioningTargetConfiguration.createConnection();
             statement = connection.createStatement();
-            ResultSet executeQuery =
-                    statement.executeQuery("SELECT * FROM " + getTableForObject() + " where OID="
-                            + this.versionedObject.getExternalId());
+            ResultSet executeQuery = statement
+                    .executeQuery("SELECT * FROM " + getTableForObject() + " where OID=" + this.versionedObject.getExternalId());
             ResultSetMetaData metaData = executeQuery.getMetaData();
             int columnCount = metaData.getColumnCount();
             while (executeQuery.next()) {
                 Map<String, Object> map = new HashMap<String, Object>();
                 resultSet.add(map);
                 for (int i = 1; i <= columnCount; i++) {
-                    map.put(metaData.getColumnName(i), executeQuery.getString(i));
+                    map.put(metaData.getColumnName(i).toLowerCase(), executeQuery.getString(i));
                 }
             }
         } catch (SQLException e) {
