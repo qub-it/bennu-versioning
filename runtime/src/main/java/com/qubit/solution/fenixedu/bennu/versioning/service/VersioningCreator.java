@@ -28,7 +28,6 @@ package com.qubit.solution.fenixedu.bennu.versioning.service;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Iterator;
 
@@ -36,7 +35,13 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 
 import org.apache.ojb.broker.accesslayer.LookupException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.qubit.solution.fenixedu.bennu.versioning.domain.VersioningConfiguration;
+import com.qubit.solution.fenixedu.bennu.versioning.domain.VersioningTargetConfiguration;
+
+import pt.ist.dap.util.Log;
 import pt.ist.fenixframework.CommitListener;
 import pt.ist.fenixframework.DomainObject;
 import pt.ist.fenixframework.Transaction;
@@ -44,12 +49,10 @@ import pt.ist.fenixframework.backend.jvstmojb.JvstmOJBTransaction;
 import pt.ist.fenixframework.backend.jvstmojb.pstm.TopLevelTransaction;
 import pt.ist.fenixframework.txintrospector.TxIntrospector;
 
-import com.qubit.solution.fenixedu.bennu.versioning.domain.VersioningConfiguration;
-import com.qubit.solution.fenixedu.bennu.versioning.domain.VersioningTargetConfiguration;
-
 public class VersioningCreator implements CommitListener {
 
     private static final String CONNECTION = VersioningCreator.class.getSimpleName() + ".connection";
+    private static final Logger logger = LoggerFactory.getLogger(VersioningCreator.class);
 
     private static Field UNDERLYING_TRANSACTION;
     static {
@@ -108,12 +111,14 @@ public class VersioningCreator implements CommitListener {
 
             if (connection != null) {
                 try {
+                    logger.debug("Starting connection log for connection: " + connection.hashCode());
                     VersioningHandler.startLog(connection);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
-                for (final Iterator<DomainObject> iterator = txIntrospector.getModifiedObjects().iterator(); iterator.hasNext();) {
+                for (final Iterator<DomainObject> iterator = txIntrospector.getModifiedObjects().iterator(); iterator
+                        .hasNext();) {
                     final DomainObject domainObject = (DomainObject) iterator.next();
                     if (!VersionableObject.class.isAssignableFrom(domainObject.getClass())) {
                         continue;
@@ -152,15 +157,16 @@ public class VersioningCreator implements CommitListener {
         final Connection connection = transaction.getFromContext(CONNECTION);
         if (connection != null) {
             try {
-                if (transaction.getStatus() == Status.STATUS_COMMITTED || transaction.getStatus() == Status.STATUS_ACTIVE) {
-                    VersioningHandler.endLog(connection);
-                }
+                logger.debug("Finishing connection log for connection: " + connection.hashCode());
+                VersioningHandler.endLog(connection,
+                        (transaction.getStatus() == Status.STATUS_COMMITTED || transaction.getStatus() == Status.STATUS_ACTIVE));
             } catch (SystemException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
                 try {
+                    logger.debug("Releasing connection log for connection: " + connection.hashCode());
                     connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();

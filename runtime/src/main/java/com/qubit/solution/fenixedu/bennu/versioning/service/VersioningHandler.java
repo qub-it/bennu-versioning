@@ -156,8 +156,9 @@ class VersioningHandler {
         return methods.get(0);
     }
 
-    protected static void endLog(Connection connection) throws SQLException {
-        executeQuery(connection, "COMMIT");
+    protected static void endLog(Connection connection, boolean success) throws SQLException {
+        String commandToExecute = success ? "COMMIT" : "ROLLBACK";
+        executeQuery(connection, commandToExecute);
     }
 
     public static void logCreate(Connection connection, int txNumber, VersionableObject domainObject) {
