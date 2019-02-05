@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import com.qubit.solution.fenixedu.bennu.versioning.domain.VersioningConfiguration;
 import com.qubit.solution.fenixedu.bennu.versioning.domain.VersioningTargetConfiguration;
 
-import pt.ist.dap.util.Log;
 import pt.ist.fenixframework.CommitListener;
 import pt.ist.fenixframework.DomainObject;
 import pt.ist.fenixframework.Transaction;
@@ -86,12 +85,14 @@ public class VersioningCreator implements CommitListener {
 
     public void beforeCommit(final Transaction transaction) {
         final TxIntrospector txIntrospector = transaction.getTxIntrospector();
+        logger.trace("Before commit for tx: " + transaction.hashCode() + " is write " + txIntrospector.isWriteTransaction());
         if (txIntrospector.isWriteTransaction()) {
             TopLevelTransaction hackedUnderlyingTransaction = getHackedUnderlyingTransaction(transaction);
             final Integer txNumber = hackedUnderlyingTransaction.getNumber();
 
             Connection connection = null;
             try {
+                logger.trace("Requesting connection for connection in tx " + transaction.hashCode());
                 connection = VersioningTargetConfiguration.createConnection();
                 transaction.putInContext(CONNECTION, connection);
             } catch (SQLException e) {
@@ -103,6 +104,7 @@ public class VersioningCreator implements CommitListener {
                 // We don't add Transaction to context here because since we're doing a piggy
                 // back in the current transaction it will be FF taking care of the commit.
                 try {
+                    logger.debug("Using FF connection instead for tx " + transaction.hashCode() + " due to error", e);
                     connection = hackedUnderlyingTransaction.getOJBBroker().serviceConnectionManager().getConnection();
                 } catch (LookupException e1) {
                     e1.printStackTrace();
@@ -111,11 +113,15 @@ public class VersioningCreator implements CommitListener {
 
             if (connection != null) {
                 try {
-                    logger.debug("Starting connection log for connection: " + connection.hashCode());
+                    logger.debug("Starting connection log for connection: " + connection.hashCode() + " associated to tx "
+                            + transaction.hashCode());
                     VersioningHandler.startLog(connection);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
+                logger.trace("Processing modified objects for connection: " + connection.hashCode() + " associated to tx "
+                        + transaction.hashCode());
 
                 for (final Iterator<DomainObject> iterator = txIntrospector.getModifiedObjects().iterator(); iterator
                         .hasNext();) {
@@ -132,6 +138,9 @@ public class VersioningCreator implements CommitListener {
                         }
                     }
                 }
+
+                logger.trace("Processing new objects for connection: " + connection.hashCode() + " associated to tx "
+                        + transaction.hashCode());
 
                 for (final Iterator<DomainObject> iterator = txIntrospector.getNewObjects().iterator(); iterator.hasNext();) {
                     final DomainObject domainObject = (DomainObject) iterator.next();
@@ -154,10 +163,12 @@ public class VersioningCreator implements CommitListener {
 
     @Override
     public void afterCommit(final Transaction transaction) {
+        logger.trace("After commit for tx: " + transaction.hashCode());
         final Connection connection = transaction.getFromContext(CONNECTION);
         if (connection != null) {
             try {
-                logger.debug("Finishing connection log for connection: " + connection.hashCode());
+                logger.debug("Finishing connection log for connection: " + connection.hashCode() + " associated to tx "
+                        + transaction.hashCode());
                 VersioningHandler.endLog(connection,
                         (transaction.getStatus() == Status.STATUS_COMMITTED || transaction.getStatus() == Status.STATUS_ACTIVE));
             } catch (SystemException e) {
@@ -166,7 +177,8 @@ public class VersioningCreator implements CommitListener {
                 e.printStackTrace();
             } finally {
                 try {
-                    logger.debug("Releasing connection log for connection: " + connection.hashCode());
+                    logger.debug("Releasing connection log for connection: " + connection.hashCode() + " associated to tx "
+                            + transaction.hashCode());
                     connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
