@@ -92,6 +92,13 @@ public class HistoryRetriever {
                     e.printStackTrace();
                 }
             }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return resultSet;
