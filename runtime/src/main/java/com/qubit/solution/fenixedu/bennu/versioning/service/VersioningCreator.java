@@ -86,11 +86,13 @@ public class VersioningCreator implements CommitListener {
     public void beforeCommit(final Transaction transaction) {
         final TxIntrospector txIntrospector = transaction.getTxIntrospector();
         logger.trace("Before commit for tx: " + transaction.hashCode() + " is write " + txIntrospector.isWriteTransaction());
+
         if (txIntrospector.isWriteTransaction()) {
             TopLevelTransaction hackedUnderlyingTransaction = getHackedUnderlyingTransaction(transaction);
             final Integer txNumber = hackedUnderlyingTransaction.getNumber();
 
             Connection connection = null;
+
             try {
                 logger.trace("Requesting connection for connection in tx " + transaction.hashCode());
                 connection = VersioningTargetConfiguration.createConnection();
@@ -112,6 +114,7 @@ public class VersioningCreator implements CommitListener {
             }
 
             if (connection != null) {
+                boolean hasAnythingToCommit = false;
                 try {
                     logger.debug("Starting connection log for connection: " + connection.hashCode() + " associated to tx "
                             + transaction.hashCode());
@@ -132,8 +135,10 @@ public class VersioningCreator implements CommitListener {
 
                     if (isVersionedActive(domainObject.getClass())) {
                         if (txIntrospector.isDeleted(domainObject)) {
+                            hasAnythingToCommit = true;
                             VersioningHandler.logDelete(connection, txNumber, (VersionableObject) domainObject);
                         } else {
+                            hasAnythingToCommit = true;
                             VersioningHandler.logEdit(connection, txNumber, (VersionableObject) domainObject);
                         }
                     }
@@ -149,11 +154,31 @@ public class VersioningCreator implements CommitListener {
                     }
 
                     if (isVersionedActive(domainObject.getClass())) {
+                        hasAnythingToCommit = true;
                         VersioningHandler.logCreate(connection, txNumber, (VersionableObject) domainObject);
+                    }
+                }
+                logger.trace("Finishing before commit for connection : " + connection.hashCode() + " associated to tx "
+                        + transaction.hashCode());
+                if (!hasAnythingToCommit) {
+                    logger.trace("Finishing before commit for connection : " + connection.hashCode() + " associated to tx "
+                            + transaction.hashCode() + " nothing to commit. Finishing right now!");
+                    try {
+                        VersioningHandler.endLog(connection, false);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            connection.close();
+                            transaction.putInContext(CONNECTION, null);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         }
+
     }
 
     private static boolean isVersionedActive(Class clazz) {
@@ -180,9 +205,13 @@ public class VersioningCreator implements CommitListener {
                     logger.debug("Releasing connection log for connection: " + connection.hashCode() + " associated to tx "
                             + transaction.hashCode());
                     connection.close();
+                    logger.debug("Released connection log for connection: " + connection.hashCode() + " associated to tx "
+                            + transaction.hashCode());
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+                logger.debug("Cleaning transaction map for connection: " + connection.hashCode() + " associated to tx "
+                        + transaction.hashCode());
                 transaction.putInContext(CONNECTION, null);
             }
         }
